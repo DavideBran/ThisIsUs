@@ -11,9 +11,12 @@ export class PlayerManager {
     this.speed = speed;
   }
 
-  createPlayer(x: number, y: number): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+  createPlayer(
+    x: number,
+    y: number
+  ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
     // Create player sprite
-    this.player = this.scene.physics.add.sprite(x, y, "player");
+    this.player = this.scene.physics.add.sprite(x, y, "player_idle");
     this.player.setOrigin(0.5, 0.5);
     this.player.setCollideWorldBounds(true);
 
@@ -30,51 +33,103 @@ export class PlayerManager {
     // Left animation
     this.scene.anims.create({
       key: "left",
-      frames: this.scene.anims.generateFrameNumbers("player", { start: 0, end: 3 }),
+      frames: this.scene.anims.generateFrameNumbers("player_walk_left", {
+        start: 0,
+        end: -1,
+      }),
       frameRate: 10,
-      repeat: -1
+      repeat: -1,
     });
 
     // Turn/idle animation
     this.scene.anims.create({
       key: "turn",
-      frames: [{ key: "player", frame: 4 }],
-      frameRate: 20
+      frames: this.scene.anims.generateFrameNumbers("player_idle", {
+        start: 0,
+        end: -1,
+      }),
+      frameRate: 10,
+      repeat: -1,
     });
 
     // Right animation
     this.scene.anims.create({
       key: "right",
-      frames: this.scene.anims.generateFrameNumbers("player", { start: 5, end: 8 }),
+      frames: this.scene.anims.generateFrameNumbers("player_walk_right", {
+        start: 0,
+        end: -1,
+      }),
       frameRate: 10,
-      repeat: -1
+      repeat: -1,
     });
 
-    
+    // Up animation
+    this.scene.anims.create({
+      key: "up",
+      frames: this.scene.anims.generateFrameNumbers("player_walk_up", {
+        start: 0,
+        end: -1,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // Down animation
+    this.scene.anims.create({
+      key: "down",
+      frames: this.scene.anims.generateFrameNumbers("player_walk_down", {
+        start: 0,
+        end: -1,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+  }
+
+  private isHorizontalMovement() {
+    return this.cursors.left?.isDown || this.cursors.right?.isDown;
+  }
+
+  private isVerticalMovement() {
+    return this.cursors.down.isDown || this.cursors.up.isDown;
+  }
+
+  private handleVerticalMovement() {
+    if (!this.isVerticalMovement()) return;
+
+    if (this.cursors.up?.isDown) {
+      this.player.setVelocityY(-this.speed);
+      this.player.anims.play("up", true);
+    } else {
+      this.player.setVelocityY(this.speed);
+      this.player.anims.play("down", true);
+    }
+  }
+
+  private handleHorizontalMovement() {
+    if (!this.isHorizontalMovement()) return;
+
+    if (this.cursors.left?.isDown) {
+      this.player.setVelocityX(-this.speed);
+      this.player.anims.play("left", true);
+    } else {
+      this.player.setVelocityX(this.speed);
+      this.player.anims.play("right", true);
+    }
   }
 
   updatePlayer(): void {
     if (!this.player || !this.cursors) return;
 
-    // Handle horizontal movement
-    if (this.cursors.left?.isDown) {
-      this.player.setVelocityX(-this.speed);
-      this.player.anims.play("left", true);
-    } else if (this.cursors.right?.isDown) {
-      this.player.setVelocityX(this.speed);
-      this.player.anims.play("right", true);
-    } else {
-      this.player.setVelocityX(0);
-      this.player.anims.play("turn");
-    }
+    this.player.setVelocityX(0);
+    this.player.setVelocityY(0);
 
-    // Handle vertical movement
-    if (this.cursors.up?.isDown) {
-      this.player.setVelocityY(-this.speed);
-    } else if (this.cursors.down?.isDown) {
-      this.player.setVelocityY(this.speed);
+    if (this.isHorizontalMovement()) {
+      this.handleHorizontalMovement();
+    } else if (this.isVerticalMovement()) {
+      this.handleVerticalMovement();
     } else {
-      this.player.setVelocityY(0);
+      this.player.anims.play("turn");
     }
   }
 

@@ -1,27 +1,35 @@
 import Phaser from "phaser";
-import { PlayerManager } from "./PlayerManager";
+import { PlayerManager } from "../PlayerManager";
 
 export abstract class BaseScene extends Phaser.Scene {
   protected playerManager!: PlayerManager;
   protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
-  constructor(key: string) {
-    super(key);
-  }
-
-  protected createPlayer(x?: number, y?: number, speed?: number): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+  /**
+   * Create the player with all the settings passed.
+   *
+   * @param y Start Y position of the player. Will fallback on the center of the screen
+   * @param x Start X position of the player. Will fallback on the center of the screen
+   * @param speed
+   * @returns The created Player
+   */
+  protected playerFactory(
+    x?: number,
+    y?: number,
+    speed?: number
+  ): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
     const { width, height } = this.scale;
-    
+
     // Default to center of screen if no position provided
     const playerX = x ?? width / 2;
     const playerY = y ?? height / 2;
-    
+
     // Create player manager with optional custom speed
     this.playerManager = new PlayerManager(this, speed);
-    
+
     // Create and return the player
     this.player = this.playerManager.createPlayer(playerX, playerY);
-    
+
     return this.player;
   }
 
@@ -41,6 +49,5 @@ export abstract class BaseScene extends Phaser.Scene {
     if (this.playerManager) {
       this.playerManager.destroy();
     }
-
   }
 }

@@ -1,4 +1,4 @@
-import { BaseScene } from "../BaseScene";
+import { BaseScene } from "./BaseScene";
 
 export default class MainScene extends BaseScene {
   constructor() {
@@ -14,7 +14,7 @@ export default class MainScene extends BaseScene {
     }).setOrigin(0.5, 0);
 
     // Create player using the base class method
-    this.createPlayer();
+    this.playerFactory();
   }
 
   update() {
