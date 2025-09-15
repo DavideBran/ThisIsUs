@@ -19,6 +19,8 @@ export default class BrucoliScene extends BaseScene {
     const { width, height } = this.scale;
     const bg = this.add.image(width / 2, height / 2, "brucoliMap");
     const w = bg.displayWidth;
+    const padding = 64;
+    this.physics.world.setBounds(w / 2 - padding, 0, w, height);
     this.buildCollisionFromJson(w);
   }
 
@@ -85,8 +87,7 @@ export default class BrucoliScene extends BaseScene {
     this.addSceneTitle();
 
     const { width, height } = this.scale;
-    this.playerFactory((width / 2) + 192, height - 32);
-
+    this.playerFactory(width / 2 + 192, height + 32);
     this.setupColliders();
   }
 
