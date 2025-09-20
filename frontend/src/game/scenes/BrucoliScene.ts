@@ -1,4 +1,5 @@
-import { BaseScene } from "./BaseScene";
+import { DefaultAnimations, getFadeTween, getFloatingTween } from "../animations";
+import SceneWithInteractionModal from "./SceneWithInteractionModal";
 
 type TiledLike = {
   width: number;
@@ -8,8 +9,19 @@ type TiledLike = {
   layers: Array<{ name: string; data: number[] }>;
 };
 
-export default class BrucoliScene extends BaseScene {
+enum SceneObject {
+  Star,
+  School,
+  Exam,
+  Movie,
+  Jacket,
+}
+
+export default class BrucoliScene extends SceneWithInteractionModal {
   private collisionBodies!: Phaser.GameObjects.Rectangle[];
+  private titleClosed = false;
+
+  private objectToShow: SceneObject | undefined = SceneObject.Star;
 
   constructor() {
     super("BrucoliScene");
@@ -70,16 +82,155 @@ export default class BrucoliScene extends BaseScene {
     }
   }
 
-  // #TODO add fade effect to the title with a proper style on top
   private addSceneTitle() {
-    const { width } = this.scale;
-    this.add
-      .text(width / 2, 32, "Sit back and enjoy the last 3 years", {
-        fontSize: "24px",
-        color: "#ffffff",
+    const { width, height } = this.scale;
+
+    const titleBox = this.add
+      .rectangle(width / 2, height / 2 - 12, 500, 100, 0x2c3e50, 0.8)
+      .setStrokeStyle(2, 0x3498db)
+      .setAlpha(1);
+
+    const titleText = this.add
+      .text(width / 2, height / 2 - 10, "Brucoli 3 Settembre 2022", {
+        fontSize: "28px",
+        fontFamily: "Arial Black, sans-serif",
+        color: "#ecf0f1",
         align: "center",
+        stroke: "#2c3e50",
+        strokeThickness: 2,
       })
-      .setOrigin(0.5, 0);
+      .setOrigin(0.5, 0.5)
+      .setAlpha(1);
+
+    getFadeTween(this.tweens, [titleBox, titleText]);
+
+    this.time.delayedCall(1500, () => {
+      this.tweens.add({
+        targets: [titleBox, titleText],
+        alpha: 0,
+        duration: 1500,
+        ease: "Power2.easeIn",
+        onComplete: () => {
+          titleBox.destroy();
+          titleText.destroy();
+          this.titleClosed = true;
+        },
+      });
+    });
+  }
+
+  private loadDefaultObject(
+    x: number,
+    y: number,
+    imageName: string,
+    modalText: string,
+    nextObject?: SceneObject,
+    scale = 0.1
+  ) {
+    const object = this.physics.add.image(x, y, imageName).setScale(scale);
+
+    object.setInteractive();
+
+    object.body.immovable = true;
+
+    const floatingTween = getFloatingTween(this.tweens, object);
+    object.setData(DefaultAnimations.Floating, floatingTween);
+
+    this.physics.add.overlap(this.player, object, () => {
+      const floatingTween = object.getData(DefaultAnimations.Floating);
+      if (floatingTween) {
+        floatingTween.stop();
+      }
+
+      this.objectToShow = nextObject;
+      this.showModal(modalText);
+
+      object.destroy();
+    });
+  }
+
+  private loadStarObject() {
+    const { width, height } = this.scale;
+    this.loadDefaultObject(
+      width / 2 - 30,
+      height - 50,
+      "star",
+      "Quindi devi mettere le stelline tra pochi giorni? \n Sei pronta al dolore?",
+      SceneObject.School,
+      0.2
+    );
+  }
+
+  private loadSchoolObject() {
+    const { width, height } = this.scale;
+    this.loadDefaultObject(
+      width / 2 + 128,
+      height / 2 + 256,
+      "backpack",
+      "Allora inizierai in una scuola 'Paritaria' Bene! \n\n\n MA COSA DIAMINE È UNA SCUOLA PARITARIA",
+      SceneObject.Jacket,
+      0.05
+    );
+  }
+
+  private loadExamObject() {
+    const { width, height } = this.scale;
+    this.loadDefaultObject(
+      width / 2 - 230,
+      height / 2,
+      "book",
+      "Devo dare un esame si, Algebra Lineare \n Non so nulla lo boccio sicuro!",
+      SceneObject.Movie
+    );
+  }
+
+  private loadJacketObject() {
+    const { width, height } = this.scale;
+    this.loadDefaultObject(
+      width / 2 + 50,
+      height / 2 - 64,
+      "jacket",
+      "Ma perchè la giacca di jeans su un vestito così bello... \n Questa è proprio stupida...",
+      SceneObject.Exam
+    );
+  }
+
+  private loadMovieObject() {
+    const { width } = this.scale;
+    this.loadDefaultObject(
+      width / 2 - 40,
+      32,
+      "movie",
+      "Sai esiste questa serie TV molto bella. Si chiama \n\nRiverdale",
+      undefined,
+      0.13
+    );
+  }
+
+  private loadNextObject() {
+    switch (this.objectToShow) {
+      case SceneObject.Star:
+        this.loadStarObject();
+        break;
+      case SceneObject.Exam:
+        this.loadExamObject();
+        break;
+      case SceneObject.School:
+        this.loadSchoolObject();
+        break;
+      case SceneObject.Movie:
+        this.loadMovieObject();
+        break;
+      case SceneObject.Jacket:
+        this.loadJacketObject();
+        break;
+    }
+
+    //this.loadStarObject();
+    //this.loadExamObject();
+    //this.loadSchoolObject();
+    //this.loadMovieObject();
+    //this.loadJacketObject();
   }
 
   create() {
@@ -89,9 +240,21 @@ export default class BrucoliScene extends BaseScene {
     const { width, height } = this.scale;
     this.playerFactory(width / 2 + 192, height + 32);
     this.setupColliders();
+    this.loadNextObject();
+
+    this.enterKey = this.input.keyboard!.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
   }
 
   update() {
-    this.updatePlayer();
+    if(!this.titleClosed) return;
+
+    if (!this.isModalOpen) {
+      this.updatePlayer();
+    } else if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+      this.hideModal();
+      this.loadNextObject();
+    }
   }
 }
