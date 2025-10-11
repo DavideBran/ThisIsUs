@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { MAP_PATH, OBJECT_PATH, PLAYER_PATH, TILESET_PATH } from "../../Paths";
+import { MAP_PATH, OBJECT_PATH, PLAYER_PATH, TILESET_PATH } from "../../utils/Paths";
 
 export default class BootScene extends Phaser.Scene {
   constructor() {

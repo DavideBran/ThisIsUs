@@ -1,4 +1,5 @@
-import { DefaultAnimations, getFadeTween, getFloatingTween } from "../animations";
+import { BusEvents, eventBus } from "../../utils/EventBus";
+import { DefaultAnimations, getFloatingTween } from "../animations";
 import SceneWithInteractionModal from "./SceneWithInteractionModal";
 
 type TiledLike = {
@@ -82,41 +83,9 @@ export default class BrucoliScene extends SceneWithInteractionModal {
     }
   }
 
-  private addSceneTitle() {
-    const { width, height } = this.scale;
-
-    const titleBox = this.add
-      .rectangle(width / 2, height / 2 - 12, 500, 100, 0x2c3e50, 0.8)
-      .setStrokeStyle(2, 0x3498db)
-      .setAlpha(1);
-
-    const titleText = this.add
-      .text(width / 2, height / 2 - 10, "Brucoli 3 Settembre 2022", {
-        fontSize: "28px",
-        fontFamily: "Arial Black, sans-serif",
-        color: "#ecf0f1",
-        align: "center",
-        stroke: "#2c3e50",
-        strokeThickness: 2,
-      })
-      .setOrigin(0.5, 0.5)
-      .setAlpha(1);
-
-    getFadeTween(this.tweens, [titleBox, titleText]);
-
-    this.time.delayedCall(1500, () => {
-      this.tweens.add({
-        targets: [titleBox, titleText],
-        alpha: 0,
-        duration: 1500,
-        ease: "Power2.easeIn",
-        onComplete: () => {
-          titleBox.destroy();
-          titleText.destroy();
-          this.titleClosed = true;
-        },
-      });
-    });
+  private triggerTitle() {
+    eventBus.emit(BusEvents.SHOW_TITLE, "Brucoli", "3 Settembre 2022");
+    eventBus.on(BusEvents.TITLE_ANIMATION_END, () => this.titleClosed = true)
   }
 
   private loadDefaultObject(
@@ -225,17 +194,11 @@ export default class BrucoliScene extends SceneWithInteractionModal {
         this.loadJacketObject();
         break;
     }
-
-    //this.loadStarObject();
-    //this.loadExamObject();
-    //this.loadSchoolObject();
-    //this.loadMovieObject();
-    //this.loadJacketObject();
   }
 
   create() {
     this.buildBackground();
-    this.addSceneTitle();
+    this.triggerTitle();
 
     const { width, height } = this.scale;
     this.playerFactory(width / 2 + 192, height + 32);
@@ -248,7 +211,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
   }
 
   update() {
-    if(!this.titleClosed) return;
+    if (!this.titleClosed) return;
 
     if (!this.isModalOpen) {
       this.updatePlayer();
