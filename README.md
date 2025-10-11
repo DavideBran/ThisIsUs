@@ -1,2 +1,2 @@
 # ThisIsUs
-Simple 2D game that recounts the last 3 years
+A simple 2D game that tells the story of how we met
