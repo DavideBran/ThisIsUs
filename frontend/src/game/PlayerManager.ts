@@ -3,7 +3,7 @@ import Phaser from "phaser";
 export class PlayerManager {
   private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
-  private scene: Phaser.Scene;
+  private readonly scene: Phaser.Scene;
   private speed: number;
 
   constructor(scene: Phaser.Scene, speed: number = 160) {

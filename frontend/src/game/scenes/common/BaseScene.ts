@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { PlayerManager } from "../PlayerManager";
+import { PlayerManager } from "../../PlayerManager";
 
 export abstract class BaseScene extends Phaser.Scene {
   protected playerManager!: PlayerManager;

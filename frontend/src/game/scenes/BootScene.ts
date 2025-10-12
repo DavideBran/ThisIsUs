@@ -1,5 +1,10 @@
 import Phaser from "phaser";
-import { MAP_PATH, OBJECT_PATH, PLAYER_PATH, TILESET_PATH } from "../../utils/Paths";
+import {
+  MAP_PATH,
+  OBJECT_PATH,
+  PLAYER_PATH,
+  TILESET_PATH,
+} from "../../utils/Paths";
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -41,13 +46,16 @@ export default class BootScene extends Phaser.Scene {
   private loadContents() {
     this.load.image("brucoliMap", `${MAP_PATH}/brucoli.png`);
     this.load.json("brucoliCollision", `${TILESET_PATH}/brucoli.json`);
-    
-   
+
     this.load.image("star", `${OBJECT_PATH}/star.png`);
     this.load.image("book", `${OBJECT_PATH}/book.png`);
     this.load.image("backpack", `${OBJECT_PATH}/backpack.png`);
     this.load.image("jacket", `${OBJECT_PATH}/jacket.png`);
     this.load.image("movie", `${OBJECT_PATH}/movie.png`);
+    this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
   }
 
   preload() {

@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import BootScene from "./scenes/BootScene";
 import BrucoliScene from "./scenes/BrucoliScene";
+import MedievalFestScene from "./scenes/MedievalFestScene";
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -13,5 +14,5 @@ export const config: Phaser.Types.Core.GameConfig = {
       gravity: { x: 0, y: 0 },
     },
   },
-  scene: [BootScene, BrucoliScene],
+  scene: [BootScene, BrucoliScene, MedievalFestScene],
 };

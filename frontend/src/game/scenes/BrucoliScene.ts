@@ -1,6 +1,6 @@
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { DefaultAnimations, getFloatingTween } from "../animations";
-import SceneWithInteractionModal from "./SceneWithInteractionModal";
+import SceneWithInteractionModal from "./common/SceneWithInteractionModal";
 
 type TiledLike = {
   width: number;
@@ -16,13 +16,15 @@ enum SceneObject {
   Exam,
   Movie,
   Jacket,
+  Door,
 }
 
 export default class BrucoliScene extends SceneWithInteractionModal {
   private collisionBodies!: Phaser.GameObjects.Rectangle[];
   private titleClosed = false;
+  private fadingOut = false;
 
-  private objectToShow: SceneObject | undefined = SceneObject.Star;
+  private objectToShow: SceneObject | undefined = SceneObject.Star; // By default we start from the STAR object
 
   constructor() {
     super("BrucoliScene");
@@ -85,7 +87,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
 
   private triggerTitle() {
     eventBus.emit(BusEvents.SHOW_TITLE, "Brucoli", "3 Settembre 2022");
-    eventBus.on(BusEvents.TITLE_ANIMATION_END, () => this.titleClosed = true)
+    eventBus.on(BusEvents.TITLE_ANIMATION_END, () => (this.titleClosed = true));
   }
 
   private loadDefaultObject(
@@ -106,6 +108,8 @@ export default class BrucoliScene extends SceneWithInteractionModal {
     object.setData(DefaultAnimations.Floating, floatingTween);
 
     this.physics.add.overlap(this.player, object, () => {
+      this.player.anims.stop();
+
       const floatingTween = object.getData(DefaultAnimations.Floating);
       if (floatingTween) {
         floatingTween.stop();
@@ -176,6 +180,46 @@ export default class BrucoliScene extends SceneWithInteractionModal {
     );
   }
 
+  private loadDoor() {
+    const { width } = this.scale;
+    const portal = this.physics.add.sprite(width / 2 - 40, 24, "portal");
+    portal.setInteractive();
+
+    this.anims.create({
+      key: "portal-idle",
+      frames: this.anims.generateFrameNumbers("portal", { start: 0, end: -1 }), // Use all frames
+      frameRate: 10,
+      repeat: -1, // Loop indefinitely
+    });
+
+    portal.play("portal-idle");
+    this.physics.add.overlap(this.player, portal, () => {
+      const floatingTween = portal.getData(DefaultAnimations.Floating);
+      if (floatingTween) {
+        floatingTween.stop();
+      }
+
+      this.fadingOut = true;
+      // Moving the player away to avoid recalling this function
+      this.player.setVisible(false);
+      this.tweens.add({
+        targets: this.player,
+        x: width,
+        y: portal.y,
+        scaleX: 0.1,
+        scaleY: 0.1,
+        alpha: 0,
+        duration: 1000,
+        ease: "Power2",
+      });
+
+      this.cameras.main.fadeOut(1000, 0, 0, 0);
+      this.cameras.main.once("camerafadeoutcomplete", () => {
+        this.scene.start("MedievalFestScene");
+      });
+    });
+  }
+
   private loadNextObject() {
     switch (this.objectToShow) {
       case SceneObject.Star:
@@ -192,6 +236,9 @@ export default class BrucoliScene extends SceneWithInteractionModal {
         break;
       case SceneObject.Jacket:
         this.loadJacketObject();
+        break;
+      case SceneObject.Door:
+        this.loadDoor();
         break;
     }
   }
@@ -211,7 +258,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
   }
 
   update() {
-    if (!this.titleClosed) return;
+    if (!this.titleClosed || this.fadingOut) return;
 
     if (!this.isModalOpen) {
       this.updatePlayer();
