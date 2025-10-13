@@ -44,9 +44,13 @@ export default class BootScene extends Phaser.Scene {
   }
 
   private loadContents() {
+    // Maps
     this.load.image("brucoliMap", `${MAP_PATH}/brucoli.png`);
+    this.load.image("medievalFestMap", `${MAP_PATH}/medieval-fest.png`);
     this.load.json("brucoliCollision", `${TILESET_PATH}/brucoli.json`);
+    this.load.json("medievalFestCollision", `${TILESET_PATH}/medieval-fest.json`);
 
+    // Game Objects
     this.load.image("star", `${OBJECT_PATH}/star.png`);
     this.load.image("book", `${OBJECT_PATH}/book.png`);
     this.load.image("backpack", `${OBJECT_PATH}/backpack.png`);
@@ -64,6 +68,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("BrucoliScene");
+    this.scene.start("MedievalFestScene");
   }
 }

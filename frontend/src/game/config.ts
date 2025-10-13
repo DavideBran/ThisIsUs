@@ -14,5 +14,9 @@ export const config: Phaser.Types.Core.GameConfig = {
       gravity: { x: 0, y: 0 },
     },
   },
+  scale: {
+    mode: Phaser.Scale.ScaleModes.FIT,
+    autoCenter: Phaser.Scale.Center.CENTER_BOTH,
+  },
   scene: [BootScene, BrucoliScene, MedievalFestScene],
 };
