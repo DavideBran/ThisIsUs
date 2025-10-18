@@ -19,11 +19,13 @@ enum SceneObject {
   Door,
 }
 
+// #TODO Make sure the colliders and the map respect thec reen size
+// #TODO Properly implement the colliders with the baseScene class.
+// Using the function buildMapColliders
 export default class BrucoliScene extends SceneWithInteractionModal {
-  private collisionBodies!: Phaser.GameObjects.Rectangle[];
+  private customCollisionBodies!: Phaser.GameObjects.Rectangle[];
   private titleClosed = false;
   private fadingOut = false;
-
   private objectToShow: SceneObject | undefined = SceneObject.Star; // By default we start from the STAR object
 
   constructor() {
@@ -72,12 +74,12 @@ export default class BrucoliScene extends SceneWithInteractionModal {
         }
       }
     }
-    this.collisionBodies = rects;
+    this.customCollisionBodies = rects;
   }
 
-  private setupColliders() {
-    if (!this.collisionBodies?.length) return;
-    for (const r of this.collisionBodies) {
+  private customSetupColliders() {
+    if (!this.customCollisionBodies?.length) return;
+    for (const r of this.customCollisionBodies) {
       this.physics.add.collider(
         this.player,
         r as unknown as Phaser.GameObjects.GameObject
@@ -171,11 +173,11 @@ export default class BrucoliScene extends SceneWithInteractionModal {
   private loadMovieObject() {
     const { width } = this.scale;
     this.loadDefaultObject(
-      width / 2 - 40,
-      32,
+      width / 2 - 10,
+      160,
       "movie",
       "Sai esiste questa serie TV molto bella. Si chiama \n\nRiverdale",
-      undefined,
+      SceneObject.Door,
       0.13
     );
   }
@@ -249,7 +251,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
 
     const { width, height } = this.scale;
     this.playerFactory(width / 2 + 192, height + 32);
-    this.setupColliders();
+    this.customSetupColliders();
     this.loadNextObject();
 
     this.enterKey = this.input.keyboard!.addKey(
@@ -267,4 +269,5 @@ export default class BrucoliScene extends SceneWithInteractionModal {
       this.loadNextObject();
     }
   }
+
 }
