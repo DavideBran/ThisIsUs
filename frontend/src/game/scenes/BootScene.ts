@@ -60,6 +60,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("backpack", `${OBJECT_PATH}/backpack.png`);
     this.load.image("jacket", `${OBJECT_PATH}/jacket.png`);
     this.load.image("movie", `${OBJECT_PATH}/movie.png`);
+    this.load.image("grate", `${OBJECT_PATH}/grate.png`);
     this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
       frameWidth: 32,
       frameHeight: 32,
@@ -75,7 +76,7 @@ export default class BootScene extends Phaser.Scene {
     });
 
     const knightSprites = 3;
-    const knightSpritesRows = 3; 
+    const knightSpritesRows = 3;
     const knightSpriteSheetSize = 384;
     this.load.spritesheet("knight", `${NPC_PATH}/knight.png`, {
       frameWidth: knightSpriteSheetSize / knightSprites,
@@ -89,8 +90,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    // #TODO TESTING
-    // this.scene.start("BrucoliScene");
-    this.scene.start("MedievalFestScene");
+    this.scene.start("BrucoliScene");
   }
 }

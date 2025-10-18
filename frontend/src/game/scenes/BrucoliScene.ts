@@ -25,7 +25,6 @@ enum SceneObject {
 export default class BrucoliScene extends SceneWithInteractionModal {
   private customCollisionBodies!: Phaser.GameObjects.Rectangle[];
   private titleClosed = false;
-  private fadingOut = false;
   private objectToShow: SceneObject | undefined = SceneObject.Star; // By default we start from the STAR object
 
   constructor() {
@@ -182,47 +181,9 @@ export default class BrucoliScene extends SceneWithInteractionModal {
     );
   }
 
-  private loadDoor() {
-    const { width } = this.scale;
-    const portal = this.physics.add.sprite(width / 2 - 40, 24, "portal");
-    portal.setInteractive();
-
-    this.anims.create({
-      key: "portal-idle",
-      frames: this.anims.generateFrameNumbers("portal", { start: 0, end: -1 }), // Use all frames
-      frameRate: 10,
-      repeat: -1, // Loop indefinitely
-    });
-
-    portal.play("portal-idle");
-    this.physics.add.overlap(this.player, portal, () => {
-      const floatingTween = portal.getData(DefaultAnimations.Floating);
-      if (floatingTween) {
-        floatingTween.stop();
-      }
-
-      this.fadingOut = true;
-      // Moving the player away to avoid recalling this function
-      this.player.setVisible(false);
-      this.tweens.add({
-        targets: this.player,
-        x: width,
-        y: portal.y,
-        scaleX: 0.1,
-        scaleY: 0.1,
-        alpha: 0,
-        duration: 1000,
-        ease: "Power2",
-      });
-
-      this.cameras.main.fadeOut(1000, 0, 0, 0);
-      this.cameras.main.once("camerafadeoutcomplete", () => {
-        this.scene.start("MedievalFestScene");
-      });
-    });
-  }
-
   private loadNextObject() {
+    const { width } = this.scale;
+
     switch (this.objectToShow) {
       case SceneObject.Star:
         this.loadStarObject();
@@ -240,7 +201,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
         this.loadJacketObject();
         break;
       case SceneObject.Door:
-        this.loadDoor();
+        this.loadDoor("MedievalFestScene", width / 2 - 40, 24);
         break;
     }
   }
@@ -269,5 +230,4 @@ export default class BrucoliScene extends SceneWithInteractionModal {
       this.loadNextObject();
     }
   }
-
 }

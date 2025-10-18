@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { PlayerManager } from "../../PlayerManager";
+import { DefaultAnimations } from "../../animations";
 
 interface ColliderRectangle {
   x: number;
@@ -23,6 +24,7 @@ export interface MapSettings {
 export abstract class BaseScene extends Phaser.Scene {
   protected playerManager!: PlayerManager;
   protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  protected fadingOut = false;
   private collisionBodies!: Phaser.GameObjects.Rectangle[];
 
   private debugColliders(mapSettings: MapSettings) {
@@ -83,24 +85,6 @@ export abstract class BaseScene extends Phaser.Scene {
         r as unknown as Phaser.GameObjects.GameObject
       );
     }
-  }
-
-  protected getScaledDisplaySize(mapSettings: MapSettings): {
-    width: number;
-    height: number;
-    scale: number;
-  } {
-    const { width, height } = this.scale;
-    // Calculate scale to fit map to screen while maintaining aspect ratio
-    const { mapWidth, mapHeight } = mapSettings;
-
-    // Calculate how much we need to scale to fit the screen
-    const screenScaleX = width / mapWidth;
-    const screenScaleY = height / mapHeight;
-    const scale = Math.min(screenScaleX, screenScaleY, 1); // Don't scale up beyond original size
-
-    // Calculate actual display dimensions
-    return { height: mapHeight * scale, width: mapWidth * scale, scale };
   }
 
   private buildMapColliders(mapSettings: MapSettings, debugMode = false) {
@@ -189,6 +173,78 @@ export abstract class BaseScene extends Phaser.Scene {
   }
 
   /**
+   * Load the door object to swithc to the next scenario.
+   * 
+   * @param scenarioId Identifier of the next scenario
+   */
+  protected loadDoor(scenarioId: string, x: number, y: number) {
+    if(!this.player) return;
+
+    const { width } = this.scale;
+    const portal = this.physics.add.sprite(x, y, "portal");
+    portal.setInteractive();
+
+    this.anims.create({
+      key: "portal-idle",
+      frames: this.anims.generateFrameNumbers("portal", { start: 0, end: -1 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    portal.play("portal-idle");
+    this.physics.add.overlap(this.player, portal, () => {
+      const floatingTween = portal.getData(DefaultAnimations.Floating);
+      if (floatingTween) {
+        floatingTween.stop();
+      }
+
+      this.fadingOut = true;
+      // Moving the player away to avoid recalling this function
+      this.player.setVisible(false);
+      this.tweens.add({
+        targets: this.player,
+        x: width,
+        y: portal.y,
+        scaleX: 0.1,
+        scaleY: 0.1,
+        alpha: 0,
+        duration: 1000,
+        ease: "Power2",
+      });
+
+      this.cameras.main.fadeOut(1000, 0, 0, 0);
+      this.cameras.main.once("camerafadeoutcomplete", () => {
+        this.scene.start(scenarioId);
+      });
+    });
+  }
+
+  /**
+   * Calculates the scaled display dimensions for a map to fit properly on the screen.
+   * Maintains aspect ratio and ensures the map doesn't scale beyond its original size.
+   *
+   * @param mapSettings The map configuration containing width and height
+   * @returns Object containing scaled width, height, and scale factor
+   */
+  protected getScaledDisplaySize(mapSettings: MapSettings): {
+    width: number;
+    height: number;
+    scale: number;
+  } {
+    const { width, height } = this.scale;
+    // Calculate scale to fit map to screen while maintaining aspect ratio
+    const { mapWidth, mapHeight } = mapSettings;
+
+    // Calculate how much we need to scale to fit the screen
+    const screenScaleX = width / mapWidth;
+    const screenScaleY = height / mapHeight;
+    const scale = Math.min(screenScaleX, screenScaleY, 1); // Don't scale up beyond original size
+
+    // Calculate actual display dimensions
+    return { height: mapHeight * scale, width: mapWidth * scale, scale };
+  }
+
+  /**
    * Build the map with the background and the colliders already applied.
    * Needs to create the player to properly add the collision.
    *
@@ -200,7 +256,7 @@ export abstract class BaseScene extends Phaser.Scene {
    */
   protected buildBackgroundWithColliders(
     mapSettings: MapSettings,
-    playerCoordinates: {x: number, y: number},
+    playerCoordinates: { x: number; y: number },
     debugMode = false
   ) {
     const { width, height } = this.scale;
