@@ -2,11 +2,21 @@ import { BusEvents, eventBus } from "../../utils/EventBus";
 import type { MapSettings } from "./common/BaseScene";
 import SceneWithInteractionModal from "./common/SceneWithInteractionModal";
 
+const CLEAR_TIMEOUT = 1000 * 10;
 export default class MedievalFestScene extends SceneWithInteractionModal {
   private titleClosed = false;
+  private readonly npcInteractedWith = new Set();
 
   constructor() {
     super("MedievalFestScene");
+  }
+
+  private removeInteraction(key: string) {
+    setTimeout(() => {
+      if (this.npcInteractedWith.has(key)) {
+        this.npcInteractedWith.delete(key);
+      }
+    }, CLEAR_TIMEOUT);
   }
 
   private triggerTitle() {
@@ -70,6 +80,25 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
 
     fireBreather.play(fireBreatherAnimKey);
     knight.play(knightAnimKey);
+
+    this.physics.add.overlap(this.player, fireBreather, () => {
+      this.player.anims.stop();
+
+      if (!this.npcInteractedWith.has(fireBreatherAnimKey)) {
+        this.showModal("Ricordi? C'era pure lo Sputa Fuoco 🔥");
+        this.npcInteractedWith.add(fireBreatherAnimKey);
+        this.removeInteraction(fireBreatherAnimKey);
+      }
+    });
+
+    this.physics.add.overlap(this.player, knight, () => {
+      this.player.anims.stop();
+      if (!this.npcInteractedWith.has(knightAnimKey)) {
+        this.showModal("Guarda che bravi!\n Prossimo anno dovremmo tornare...");
+        this.npcInteractedWith.add(knightAnimKey);
+        this.removeInteraction(knightAnimKey);
+      }
+    });
   }
 
   create() {
@@ -81,10 +110,19 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
     this.buildBackgroundWithColliders(mapSettings, playerCoordinates);
     this.loadNpcs();
     this.triggerTitle();
+
+    this.enterKey = this.input.keyboard!.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ENTER
+    );
   }
 
   update() {
     if (!this.titleClosed) return;
-    this.updatePlayer();
+
+    if (!this.isModalOpen) {
+      this.updatePlayer();
+    } else if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+      this.hideModal();
+    }
   }
 }
