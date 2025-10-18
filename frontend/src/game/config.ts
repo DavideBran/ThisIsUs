@@ -18,5 +18,6 @@ export const config: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.ScaleModes.FIT,
     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
   },
+  pixelArt: true,
   scene: [BootScene, BrucoliScene, MedievalFestScene],
 };

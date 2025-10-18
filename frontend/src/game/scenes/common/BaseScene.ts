@@ -85,7 +85,7 @@ export abstract class BaseScene extends Phaser.Scene {
     }
   }
 
-  private getScaledDisplaySize(mapSettings: MapSettings): {
+  protected getScaledDisplaySize(mapSettings: MapSettings): {
     width: number;
     height: number;
     scale: number;
