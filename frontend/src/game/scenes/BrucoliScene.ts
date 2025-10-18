@@ -1,6 +1,6 @@
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { DefaultAnimations, getFloatingTween } from "../animations";
-import SceneWithInteractionModal from "./SceneWithInteractionModal";
+import SceneWithInteractionModal from "./common/SceneWithInteractionModal";
 
 type TiledLike = {
   width: number;
@@ -16,13 +16,16 @@ enum SceneObject {
   Exam,
   Movie,
   Jacket,
+  Door,
 }
 
+// #TODO Make sure the colliders and the map respect thec reen size
+// #TODO Properly implement the colliders with the baseScene class.
+// Using the function buildMapColliders
 export default class BrucoliScene extends SceneWithInteractionModal {
-  private collisionBodies!: Phaser.GameObjects.Rectangle[];
+  private customCollisionBodies!: Phaser.GameObjects.Rectangle[];
   private titleClosed = false;
-
-  private objectToShow: SceneObject | undefined = SceneObject.Star;
+  private objectToShow: SceneObject | undefined = SceneObject.Star; // By default we start from the STAR object
 
   constructor() {
     super("BrucoliScene");
@@ -70,12 +73,12 @@ export default class BrucoliScene extends SceneWithInteractionModal {
         }
       }
     }
-    this.collisionBodies = rects;
+    this.customCollisionBodies = rects;
   }
 
-  private setupColliders() {
-    if (!this.collisionBodies?.length) return;
-    for (const r of this.collisionBodies) {
+  private customSetupColliders() {
+    if (!this.customCollisionBodies?.length) return;
+    for (const r of this.customCollisionBodies) {
       this.physics.add.collider(
         this.player,
         r as unknown as Phaser.GameObjects.GameObject
@@ -85,7 +88,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
 
   private triggerTitle() {
     eventBus.emit(BusEvents.SHOW_TITLE, "Brucoli", "3 Settembre 2022");
-    eventBus.on(BusEvents.TITLE_ANIMATION_END, () => this.titleClosed = true)
+    eventBus.on(BusEvents.TITLE_ANIMATION_END, () => (this.titleClosed = true));
   }
 
   private loadDefaultObject(
@@ -106,6 +109,8 @@ export default class BrucoliScene extends SceneWithInteractionModal {
     object.setData(DefaultAnimations.Floating, floatingTween);
 
     this.physics.add.overlap(this.player, object, () => {
+      this.player.anims.stop();
+
       const floatingTween = object.getData(DefaultAnimations.Floating);
       if (floatingTween) {
         floatingTween.stop();
@@ -167,16 +172,18 @@ export default class BrucoliScene extends SceneWithInteractionModal {
   private loadMovieObject() {
     const { width } = this.scale;
     this.loadDefaultObject(
-      width / 2 - 40,
-      32,
+      width / 2 - 10,
+      160,
       "movie",
       "Sai esiste questa serie TV molto bella. Si chiama \n\nRiverdale",
-      undefined,
+      SceneObject.Door,
       0.13
     );
   }
 
   private loadNextObject() {
+    const { width } = this.scale;
+
     switch (this.objectToShow) {
       case SceneObject.Star:
         this.loadStarObject();
@@ -193,6 +200,9 @@ export default class BrucoliScene extends SceneWithInteractionModal {
       case SceneObject.Jacket:
         this.loadJacketObject();
         break;
+      case SceneObject.Door:
+        this.loadDoor("MedievalFestScene", width / 2 - 40, 24);
+        break;
     }
   }
 
@@ -202,7 +212,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
 
     const { width, height } = this.scale;
     this.playerFactory(width / 2 + 192, height + 32);
-    this.setupColliders();
+    this.customSetupColliders();
     this.loadNextObject();
 
     this.enterKey = this.input.keyboard!.addKey(
@@ -211,7 +221,7 @@ export default class BrucoliScene extends SceneWithInteractionModal {
   }
 
   update() {
-    if (!this.titleClosed) return;
+    if (!this.titleClosed || this.fadingOut) return;
 
     if (!this.isModalOpen) {
       this.updatePlayer();

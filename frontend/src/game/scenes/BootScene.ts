@@ -1,5 +1,11 @@
 import Phaser from "phaser";
-import { MAP_PATH, OBJECT_PATH, PLAYER_PATH, TILESET_PATH } from "../../utils/Paths";
+import {
+  MAP_PATH,
+  NPC_PATH,
+  OBJECT_PATH,
+  PLAYER_PATH,
+  TILESET_PATH,
+} from "../../utils/Paths";
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -39,15 +45,43 @@ export default class BootScene extends Phaser.Scene {
   }
 
   private loadContents() {
+    // Maps
     this.load.image("brucoliMap", `${MAP_PATH}/brucoli.png`);
+    this.load.image("medievalFestMap", `${MAP_PATH}/medieval-fest.png`);
     this.load.json("brucoliCollision", `${TILESET_PATH}/brucoli.json`);
-    
-   
+    this.load.json(
+      "medievalFestCollision",
+      `${TILESET_PATH}/medieval-fest.json`
+    );
+
+    // Game Objects
     this.load.image("star", `${OBJECT_PATH}/star.png`);
     this.load.image("book", `${OBJECT_PATH}/book.png`);
     this.load.image("backpack", `${OBJECT_PATH}/backpack.png`);
     this.load.image("jacket", `${OBJECT_PATH}/jacket.png`);
     this.load.image("movie", `${OBJECT_PATH}/movie.png`);
+    this.load.image("grate", `${OBJECT_PATH}/grate.png`);
+    this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+    // NPCs
+    const fireBreatherSprites = 4;
+    const fireBreatherSpritesRows = 2;
+    const fireBreatherSpriteSheetSize = 500;
+    this.load.spritesheet("fireBreather", `${NPC_PATH}/fire-breather.png`, {
+      frameWidth: fireBreatherSpriteSheetSize / fireBreatherSprites,
+      frameHeight: fireBreatherSpriteSheetSize / fireBreatherSpritesRows,
+    });
+
+    const knightSprites = 3;
+    const knightSpritesRows = 3;
+    const knightSpriteSheetSize = 384;
+    this.load.spritesheet("knight", `${NPC_PATH}/knight.png`, {
+      frameWidth: knightSpriteSheetSize / knightSprites,
+      frameHeight: knightSpriteSheetSize / knightSpritesRows,
+    });
   }
 
   preload() {
