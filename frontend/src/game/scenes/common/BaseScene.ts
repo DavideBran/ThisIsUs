@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { PlayerManager } from "../../PlayerManager";
-import { DefaultAnimations } from "../../animations";
+import { DefaultAnimations, getFloatingTween } from "../../animations";
 
 interface ColliderRectangle {
   x: number;
@@ -174,11 +174,11 @@ export abstract class BaseScene extends Phaser.Scene {
 
   /**
    * Load the door object to swithc to the next scenario.
-   * 
+   *
    * @param scenarioId Identifier of the next scenario
    */
   protected loadDoor(scenarioId: string, x: number, y: number) {
-    if(!this.player) return;
+    if (!this.player) return;
 
     const { width } = this.scale;
     const portal = this.physics.add.sprite(x, y, "portal");
@@ -283,6 +283,49 @@ export abstract class BaseScene extends Phaser.Scene {
 
     this.playerFactory(playerCoordinates.x, playerCoordinates.y);
     this.buildMapColliders(mapSettings, debugMode);
+  }
+
+  /**
+   * Load an object on the map
+   * 
+   * @param x
+   * @param y
+   * @param objectId Object id to load the correct image
+   * @param scale Scale factor of the object (by default = 0.5)
+   * @param collisionCallback Function colled on collision with the object
+   * @param loadFloatingTween If true the object will load a floating animation (true by default)
+   */
+  protected loadObject(
+    x: number,
+    y: number,
+    objectId: string,
+    scale = 0.5,
+    collisionCallback?: (
+      obj: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
+    ) => void,
+    loadFloatingTween = true
+  ) {
+    const obj = this.physics.add.image(x, y, objectId).setScale(scale);
+    obj.setInteractive();
+    obj.body.immovable = true;
+
+    if (loadFloatingTween) {
+      const floatingTween = getFloatingTween(this.tweens, obj);
+      obj.setData(DefaultAnimations.Floating, floatingTween);
+    }
+
+    this.physics.add.overlap(this.player, obj, () => {
+      this.player.anims.stop();
+
+      if (loadFloatingTween) {
+        const floatingTween = obj.getData(DefaultAnimations.Floating);
+        if (floatingTween) {
+          floatingTween.stop();
+        }
+      }
+
+      collisionCallback?.(obj);
+    });
   }
 
   destroy(): void {

@@ -48,19 +48,28 @@ export default class BootScene extends Phaser.Scene {
     // Maps
     this.load.image("brucoliMap", `${MAP_PATH}/brucoli.png`);
     this.load.image("medievalFestMap", `${MAP_PATH}/medieval-fest.png`);
+    this.load.image("streetFoodMap", `${MAP_PATH}/street-food.png`);
+
+    // Maps Collision
     this.load.json("brucoliCollision", `${TILESET_PATH}/brucoli.json`);
     this.load.json(
       "medievalFestCollision",
       `${TILESET_PATH}/medieval-fest.json`
     );
+    this.load.json(
+      "streetFoodCollision",
+      `${TILESET_PATH}/street-food.json`
+    );
 
     // Game Objects
     this.load.image("star", `${OBJECT_PATH}/star.png`);
+    this.load.image("suppli", `${OBJECT_PATH}/suppli.png`);
     this.load.image("book", `${OBJECT_PATH}/book.png`);
     this.load.image("backpack", `${OBJECT_PATH}/backpack.png`);
     this.load.image("jacket", `${OBJECT_PATH}/jacket.png`);
     this.load.image("movie", `${OBJECT_PATH}/movie.png`);
     this.load.image("grate", `${OBJECT_PATH}/grate.png`);
+    this.load.image("pizza", `${OBJECT_PATH}/pizza.png`);
     this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
       frameWidth: 32,
       frameHeight: 32,
