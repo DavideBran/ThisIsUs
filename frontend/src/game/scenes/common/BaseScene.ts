@@ -26,9 +26,11 @@ export abstract class BaseScene extends Phaser.Scene {
   protected player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   protected fadingOut = false;
   private collisionBodies!: Phaser.GameObjects.Rectangle[];
+  private mapSettings!: MapSettings;
 
-  private debugColliders(mapSettings: MapSettings) {
+  private debugColliders() {
     const { width: screenWidth, height: screenHeight } = this.scale;
+    const mapSettings = this.mapSettings;
 
     const {
       height: displayHeight,
@@ -87,7 +89,8 @@ export abstract class BaseScene extends Phaser.Scene {
     }
   }
 
-  private buildMapColliders(mapSettings: MapSettings, debugMode = false) {
+  private buildMapColliders(debugMode = false) {
+    const mapSettings = this.mapSettings;
     const rects: Phaser.GameObjects.Rectangle[] = [];
     const { width: screenWidth, height: screenHeight } = this.scale;
     const {
@@ -124,7 +127,7 @@ export abstract class BaseScene extends Phaser.Scene {
     this.collisionBodies = rects;
 
     if (debugMode) {
-      this.debugColliders(mapSettings);
+      this.debugColliders();
     }
 
     if (this.player) {
@@ -245,20 +248,45 @@ export abstract class BaseScene extends Phaser.Scene {
   }
 
   /**
+   * 
+   * @param mapX Coordinate x
+   * @param mapY Coordinate y
+   * @returns The coordinate x and y scaled on the map
+   */
+  protected getMapPosition(
+    mapX: number,
+    mapY: number
+  ): { x: number; y: number } {
+    const { width, height } = this.scale;
+    const mapSettings = this.mapSettings;
+    const { scale } = this.getScaledDisplaySize(mapSettings);
+
+    const scaledX = mapX * scale;
+    const scaledY = mapY * scale;
+    const x = scaledX + width / 2 - (mapSettings.mapWidth * scale) / 2;
+    const y = scaledY + height / 2 - (mapSettings.mapHeight * scale) / 2;
+
+    return { x, y };
+  }
+
+  /**
    * Build the map with the background and the colliders already applied.
    * Needs to create the player to properly add the collision.
    *
    *
-   * @param mapSettings Settings of the map
+   * @param mapSettings Settings of the map. Will be stored
    * @param playerCoordinates Coordiantes where the player will be generated
    * @param debugMode If true the colliders will be highlithed
+   * @param customScale
    *
    */
   protected buildBackgroundWithColliders(
     mapSettings: MapSettings,
     playerCoordinates: { x: number; y: number },
-    debugMode = false
+    debugMode = false,
+    customScale?: number
   ) {
+    this.mapSettings = mapSettings;
     const { width, height } = this.scale;
 
     const x = width / 2;
@@ -270,7 +298,9 @@ export abstract class BaseScene extends Phaser.Scene {
       scale,
     } = this.getScaledDisplaySize(mapSettings);
 
-    this.add.image(x, y, mapSettings.mapIdentifier).setScale(scale);
+    this.add
+      .image(x, y, mapSettings.mapIdentifier)
+      .setScale(customScale ?? scale);
 
     // Use actual display dimensions for physics bounds
     const padding = 64;
@@ -282,12 +312,12 @@ export abstract class BaseScene extends Phaser.Scene {
     );
 
     this.playerFactory(playerCoordinates.x, playerCoordinates.y);
-    this.buildMapColliders(mapSettings, debugMode);
+    this.buildMapColliders(debugMode);
   }
 
   /**
    * Load an object on the map
-   * 
+   *
    * @param x
    * @param y
    * @param objectId Object id to load the correct image

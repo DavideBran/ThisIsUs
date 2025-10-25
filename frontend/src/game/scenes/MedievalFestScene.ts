@@ -45,21 +45,6 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
     };
   }
 
-  private getMapPosition(mapX: number, mapY: number): { x: number; y: number } {
-    const { width, height } = this.scale;
-    const mapSettings = this.cache.json.get(
-      "medievalFestCollision"
-    ) as MapSettings;
-    const { scale } = this.getScaledDisplaySize(mapSettings);
-
-    const scaledX = mapX * scale;
-    const scaledY = mapY * scale;
-    const x = scaledX + width / 2 - (mapSettings.mapWidth * scale) / 2;
-    const y = scaledY + height / 2 - (mapSettings.mapHeight * scale) / 2;
-
-    return { x, y };
-  }
-
   private loadNpcs() {
     // Define NPC positions in map coordinates
     const fireBreatherPos = this.getMapPosition(670, 128);

@@ -23,21 +23,6 @@ export default class StreetFoodScene extends SceneWithInteractionModal {
     eventBus.on(BusEvents.TITLE_ANIMATION_END, () => (this.titleClosed = true));
   }
 
-  private getMapPosition(mapX: number, mapY: number): { x: number; y: number } {
-    const { width, height } = this.scale;
-    const mapSettings = this.cache.json.get(
-      "streetFoodCollision"
-    ) as MapSettings;
-    const { scale } = this.getScaledDisplaySize(mapSettings);
-
-    const scaledX = mapX * scale;
-    const scaledY = mapY * scale;
-    const x = scaledX + width / 2 - (mapSettings.mapWidth * scale) / 2;
-    const y = scaledY + height / 2 - (mapSettings.mapHeight * scale) / 2;
-
-    return { x, y };
-  }
-
   private loadObjects() {
     const { x: pizzaX, y: pizzaY } = this.getMapPosition(350, 150);
     const { x: suppliX, y: suppliY } = this.getMapPosition(160, 500);
