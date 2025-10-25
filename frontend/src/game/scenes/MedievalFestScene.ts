@@ -1,5 +1,4 @@
 import { BusEvents, eventBus } from "../../utils/EventBus";
-import { DefaultAnimations, getFloatingTween } from "../animations";
 import type { MapSettings } from "./common/BaseScene";
 import SceneWithInteractionModal from "./common/SceneWithInteractionModal";
 
@@ -113,33 +112,18 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
     });
   }
 
-  // #TODO use the loadObject function on the base classs
   private loadGrateObject() {
     const { x, y } = this.getMapPosition(180, 300);
-    const grate = this.physics.add.image(x, y, "grate").setScale(0.05);
-
-    grate.setInteractive();
-
-    grate.body.immovable = true;
-
-    const floatingTween = getFloatingTween(this.tweens, grate);
-    grate.setData(DefaultAnimations.Floating, floatingTween);
-
-    this.physics.add.overlap(this.player, grate, () => {
-      this.player.anims.stop();
-
-      const floatingTween = grate.getData(DefaultAnimations.Floating);
-      if (floatingTween) {
-        floatingTween.stop();
-      }
-
+    const onGrateCollision = () => {
       if (!this.hasInteracted.has("grate")) {
         this.interactionCount++;
         this.hasInteracted.add("grate");
         this.showModal("Hai risolto il tuo piccolo problema con le grate? 👻");
         this.removeInteraction("grate");
       }
-    });
+    };
+
+    this.loadObject(x, y, "grate", 0.05, onGrateCollision);
   }
 
   create() {
