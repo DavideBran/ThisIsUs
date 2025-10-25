@@ -48,10 +48,16 @@ export default class BootScene extends Phaser.Scene {
     // Maps
     this.load.image("brucoliMap", `${MAP_PATH}/brucoli.png`);
     this.load.image("medievalFestMap", `${MAP_PATH}/medieval-fest.png`);
+    this.load.image("streetFoodMap", `${MAP_PATH}/street-food.png`);
+    // Maps Collision
     this.load.json("brucoliCollision", `${TILESET_PATH}/brucoli.json`);
     this.load.json(
       "medievalFestCollision",
       `${TILESET_PATH}/medieval-fest.json`
+    );
+    this.load.json(
+      "streetFoodCollision",
+      `${TILESET_PATH}/street-food.json`
     );
 
     // Game Objects
@@ -61,6 +67,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("jacket", `${OBJECT_PATH}/jacket.png`);
     this.load.image("movie", `${OBJECT_PATH}/movie.png`);
     this.load.image("grate", `${OBJECT_PATH}/grate.png`);
+    this.load.image("pizza", `${OBJECT_PATH}/pizza.png`);
     this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
       frameWidth: 32,
       frameHeight: 32,
@@ -90,6 +97,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("BrucoliScene");
+    this.scene.start("StreetFoodScene");
   }
 }

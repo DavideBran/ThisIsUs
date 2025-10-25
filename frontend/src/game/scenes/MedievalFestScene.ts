@@ -15,9 +15,8 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
 
   private shouldShowDoor() {
     if (this.interactionCount >= 3) {
-      // #TODO this will become the next scenario ID
       const { x, y } = this.getMapPosition(530, 420);
-      this.loadDoor("BrucoliScene", x, y);
+      this.loadDoor("StreetFoodScene", x, y);
     }
   }
 
