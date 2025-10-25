@@ -113,6 +113,7 @@ export default class MedievalFestScene extends SceneWithInteractionModal {
     });
   }
 
+  // #TODO use the loadObject function on the base classs
   private loadGrateObject() {
     const { x, y } = this.getMapPosition(180, 300);
     const grate = this.physics.add.image(x, y, "grate").setScale(0.05);
