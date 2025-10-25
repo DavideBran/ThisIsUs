@@ -99,6 +99,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("StreetFoodScene");
+    this.scene.start("BrucoliScene");
   }
 }
