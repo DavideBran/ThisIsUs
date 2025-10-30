@@ -13,8 +13,7 @@ export default class StreetFoodScene extends SceneWithInteractionModal {
   private shouldShowPortal() {
     if (this.objectCount === 2) {
       const { x, y } = this.getMapPosition(260, 80);
-      // #TODO this should load the next shene
-      this.loadDoor("BrucoliScene", x, y);
+      this.loadDoor("BedroomScene", x, y);
     }
   }
 
