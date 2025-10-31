@@ -75,7 +75,6 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("phone", `${OBJECT_PATH}/iphone.png`);
     this.load.image("laptop", `${OBJECT_PATH}/laptop.png`);
 
-
     this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
       frameWidth: 32,
       frameHeight: 32,
