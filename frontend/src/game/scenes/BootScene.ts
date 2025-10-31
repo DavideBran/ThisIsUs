@@ -73,6 +73,8 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("grate", `${OBJECT_PATH}/grate.png`);
     this.load.image("pizza", `${OBJECT_PATH}/pizza.png`);
     this.load.image("phone", `${OBJECT_PATH}/iphone.png`);
+    this.load.image("laptop", `${OBJECT_PATH}/laptop.png`);
+
 
     this.load.spritesheet("portal", `${OBJECT_PATH}/portal.png`, {
       frameWidth: 32,
@@ -103,6 +105,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("BedroomScene");
+    this.scene.start("BrucoliScene");
   }
 }

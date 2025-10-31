@@ -4,67 +4,68 @@
     "mapHeight": 768,
     "colliders": [
         {
-            "name": "Bottom Left Market Stall",
+            "name": "Bottom Left Sofa",
             "boxes": [
                 {
-                    "x": 100,
-                    "y": 510,
+                    "x": 85,
+                    "y": 620,
                     "width": 110,
-                    "height": 180
-                }
-            ]
-        },
-        {
-            "name": "Bottom Right Small Market Stall",
-            "boxes": [
-                {
-                    "x": 440,
-                    "y": 700,
-                    "width": 80,
-                    "height": 180
-                }
-            ]
-        },
-        {
-            "name": "Middle Right Market Stall",
-            "boxes": [
-                {
-                    "x": 430,
-                    "y": 400,
-                    "width": 150,
                     "height": 180
                 },
                 {
-                    "x": 430,
-                    "y": 300,
-                    "width": 150,
+                    "x": 65,
+                    "y": 500,
+                    "width": 40,
                     "height": 40
                 }
             ]
         },
         {
-            "name": "Top Right Market Stall",
+            "name": "Bed",
             "boxes": [
                 {
-                    "x": 430,
-                    "y": 80,
-                    "width": 150,
-                    "height": 220
+                    "x": 85,
+                    "y": 340,
+                    "width": 90,
+                    "height": 200
                 }
             ]
         },
         {
-            "name": "Top Left Markets",
+            "name": "Right Desk",
             "boxes": [
                 {
-                    "x": 80,
-                    "y": 120,
-                    "width": 40,
-                    "height": 220
+                    "x": 450,
+                    "y": 450,
+                    "width": 50,
+                    "height": 190
                 },
                 {
-                    "x": 140,
-                    "y": 60,
+                    "x": 460,
+                    "y": 300,
+                    "width": 50,
+                    "height": 40
+                }
+            ]
+        },
+        {
+            "name": "Top Desk",
+            "boxes": [
+                {
+                    "x": 290,
+                    "y": 80,
+                    "width": 300,
+                    "height": 100
+                },
+                {
+                    "x": 430,
+                    "y": 150,
+                    "width": 50,
+                    "height": 80
+                },
+                {
+                    "x": 80,
+                    "y": 100,
                     "width": 80,
                     "height": 60
                 }
