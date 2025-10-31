@@ -104,6 +104,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("BrucoliScene");
+    this.scene.start("FinalScene");
   }
 }
