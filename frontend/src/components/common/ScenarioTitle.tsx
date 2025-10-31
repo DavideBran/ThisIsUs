@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { AnimatePresence, motion } from "motion/react";
-import parchmentImage from "../../../public/parchment.png";
+import parchmentImage from "../../assets/images/parchment.png";
 
 export function ScenarioTitle() {
   const [show, setShow] = useState(false);
