@@ -1,0 +1,75 @@
+{
+    "mapIdentifier": "bedroomMap",
+    "mapWidth": 512,
+    "mapHeight": 768,
+    "colliders": [
+        {
+            "name": "Bottom Left Sofa",
+            "boxes": [
+                {
+                    "x": 85,
+                    "y": 620,
+                    "width": 110,
+                    "height": 180
+                },
+                {
+                    "x": 65,
+                    "y": 500,
+                    "width": 40,
+                    "height": 40
+                }
+            ]
+        },
+        {
+            "name": "Bed",
+            "boxes": [
+                {
+                    "x": 85,
+                    "y": 340,
+                    "width": 90,
+                    "height": 200
+                }
+            ]
+        },
+        {
+            "name": "Right Desk",
+            "boxes": [
+                {
+                    "x": 450,
+                    "y": 450,
+                    "width": 50,
+                    "height": 190
+                },
+                {
+                    "x": 460,
+                    "y": 300,
+                    "width": 50,
+                    "height": 40
+                }
+            ]
+        },
+        {
+            "name": "Top Desk",
+            "boxes": [
+                {
+                    "x": 290,
+                    "y": 80,
+                    "width": 300,
+                    "height": 100
+                },
+                {
+                    "x": 430,
+                    "y": 150,
+                    "width": 50,
+                    "height": 80
+                },
+                {
+                    "x": 80,
+                    "y": 100,
+                    "width": 80,
+                    "height": 60
+                }
+            ]
+        }
+    ]
+}

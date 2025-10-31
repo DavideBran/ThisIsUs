@@ -3,6 +3,7 @@ import BootScene from "./scenes/BootScene";
 import BrucoliScene from "./scenes/BrucoliScene";
 import MedievalFestScene from "./scenes/MedievalFestScene";
 import StreetFoodScene from "./scenes/StreetFoodScene";
+import BedroomScene from "./scenes/BedroomScene";
 
 export const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -20,5 +21,5 @@ export const config: Phaser.Types.Core.GameConfig = {
     autoCenter: Phaser.Scale.Center.CENTER_BOTH,
   },
   pixelArt: true,
-  scene: [BootScene, BrucoliScene, MedievalFestScene, StreetFoodScene],
+  scene: [BootScene, BrucoliScene, MedievalFestScene, StreetFoodScene, BedroomScene],
 };
