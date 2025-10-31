@@ -18,8 +18,7 @@ export default class BedroomScene extends SceneWithInteractionModal {
 
   private triggerDoor() {
     const { x, y } = this.getMapPosition(260, 680);
-    // #TODO this should go to the FINAL scene
-    this.loadDoor("BrucoliScene", x, y);
+    this.loadDoor("FinalScene", x, y);
   }
 
   private loadPhoneObject() {

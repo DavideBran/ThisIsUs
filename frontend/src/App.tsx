@@ -1,6 +1,7 @@
 import Game from "./Game";
 import "./App.css";
 import { ScenarioTitle } from "./components/common/ScenarioTitle";
+import { FinalSceneText } from "./components/common/FinalSceneText";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         }}
       >
         <ScenarioTitle />
+        <FinalSceneText />
       </div>
     </div>
   );
