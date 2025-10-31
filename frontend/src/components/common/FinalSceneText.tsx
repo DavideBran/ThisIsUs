@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { AnimatePresence, motion } from "motion/react";
-import parchmentImage from "../../../public/final_parchment.png";
+import parchmentImage from "../../assets/images/final_parchment.png";
 
 export function FinalSceneText() {
   const [show, setShow] = useState(false);
@@ -48,23 +48,15 @@ export function FinalSceneText() {
               Tre anni di litigate, arrabbiature, momenti tristi e poco belli
               MA,
               <br />
-              {/* Insieme a tutto questo sono stati anche 3 anni di Amore, di
-              Felicità, di Gioia, di Gioco, di Divertimento. Ripereteri tutto,
-              dalla prima all'ultima cosa. Magari questa volta ti darei le
-              ripetizioni di matematica... */}
               Insieme a tutto questo, sono stati anche tre anni di Amore, di Felicità, di Gioia, di
               Gioco e di Divertimento. Li ripeterei tutti, dalla prima
               all’ultima cosa. Magari, questa volta, ti darei io le ripetizioni
               di matematica...
               <br />
-              {/* Mi hai fatto capire cosa vuol dire avere qualcuno accanto che mi
-              Ami e mi Sostenga, sia nelle stupidaggini che nelle cose serie. */}
               Mi hai fatto capire cosa significa davvero
               avere accanto qualcuno che mi ama e mi sostiene, sia nelle
               stupidaggini che nelle cose più serie.
               <br />
-              {/* Ci sei e ci sei sempre stata, e spero tanto di essere stato lo
-              stesso per te. */}
               Ci sei, e ci sei sempre
               stata. Spero tanto di essere stato lo stesso per te.
               <br />
