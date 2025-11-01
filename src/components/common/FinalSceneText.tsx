@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { AnimatePresence, motion } from "motion/react";
-import parchmentImage from "../../assets/images/final_parchment.png";
 
 export function FinalSceneText() {
   const [show, setShow] = useState(false);
@@ -32,7 +31,7 @@ export function FinalSceneText() {
           <motion.div
             className="relative flex flex-col items-center justify-center text-center p-10"
             style={{
-              backgroundImage: `url(${parchmentImage})`,
+              backgroundImage: `url("final_parchment.png")`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "contain",
               backgroundPosition: "center",
