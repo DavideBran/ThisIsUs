@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { BusEvents, eventBus } from "../../utils/EventBus";
 import { AnimatePresence, motion } from "motion/react";
-import parchmentImage from "../../assets/images/parchment.png";
 
 export function ScenarioTitle() {
   const [show, setShow] = useState(false);
@@ -43,7 +42,7 @@ export function ScenarioTitle() {
             className="h-[200px] min-w-[500px] flex justify-center items-center flex-col"
             initial={{ scale: 0.8 }}
             style={{
-              backgroundImage: `url(${parchmentImage})`,
+              backgroundImage: `url("parchment.png")`,
               backgroundPosition: "center",
             }}
             animate={{ scale: 1 }}
